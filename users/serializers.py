@@ -16,3 +16,10 @@ class RegisterUserSerializer(serializers.ModelSerializer):
         )
         return user
     
+
+class UserSerializer(serializers.ModelSerializer):
+    id = serializers.CharField(read_only=True)
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email']
+    
