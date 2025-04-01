@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'drf_yasg', 
     'content',
     'subscription',
+    'django_celery_beat',
 ]
 
 MIDDLEWARE = [
@@ -202,3 +203,9 @@ LOGGING = {
         },
     },
 }
+
+
+# Celery config
+CELERY_BROKER_URL = 'redis://localhost:6379/0'  # Redis as message broker
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
