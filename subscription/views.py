@@ -4,11 +4,13 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework import status, permissions
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from .models import Subscription
-from .serializers import SubscriptionSerializer
+from .models import Subscription, SubscriptionPlan
+from .serializers import SubscriptionPlanSerializer, SubscriptionSerializer
+from django.core.cache import cache
+from django.views.decorators.cache import cache_page
 import logging
 
 
@@ -113,7 +115,28 @@ def get_subscription_by_id(request, sub_id):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
         
-        
+       
+
+@swagger_auto_schema(
+    method="get",
+    operation_description="Retrieve all available subscription plans.",
+    responses={
+        200: SubscriptionPlanSerializer(many=True),
+        500: "Internal server error"
+    }
+)
+
+@cache_page(60 * 15, key_prefix="sub_plans")
+@api_view(['GET'])
+@authentication_classes([])
+@permission_classes([AllowAny])
+def get_subscription_plans(request):
+    try:
+        plans = SubscriptionPlan.objects.all()
+        serializer = SubscriptionPlanSerializer(plans, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({"detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR) 
         
         
         

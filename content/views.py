@@ -8,6 +8,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from drf_yasg.utils import swagger_auto_schema
 import logging
 from content.serializers import ContentSerializer
+from django.views.decorators.cache import cache_page
 # Create your views here.
 
 
@@ -46,6 +47,8 @@ def create_content(request):
         500: "Internal server error."
     }
 )
+
+@cache_page(60 * 15 , key_prefix="contents_list")
 @api_view(['GET'])
 @authentication_classes([JWTAuthentication])
 @permission_classes([IsAuthenticated])
