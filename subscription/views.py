@@ -86,16 +86,7 @@ def get_all_subscriptions(request):
     method="get",
     operation_description="Retrieve a user's subscription by ID.",
     responses={
-        200: openapi.Response("Subscription retrieved successfully", schema=openapi.Schema(
-            type=openapi.TYPE_OBJECT,
-            properties={
-                "id": openapi.Schema(type=openapi.TYPE_INTEGER),
-                "plan": openapi.Schema(type=openapi.TYPE_INTEGER),
-                "start_date": openapi.Schema(type=openapi.TYPE_STRING, format="date-time"),
-                "end_date": openapi.Schema(type=openapi.TYPE_STRING, format="date-time"),
-                "auto_renew": openapi.Schema(type=openapi.TYPE_BOOLEAN),
-            },
-        )),
+        200: SubscriptionSerializer(),
         404: openapi.Response("Subscription not found"),
     }
 )

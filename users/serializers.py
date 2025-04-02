@@ -1,6 +1,9 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 
+from content.models import Content
+from .models import UserActivity
+
 class RegisterUserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, min_length=6)
 
@@ -22,4 +25,15 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'username', 'email']
+        
+
+class UserActivitySerializer(serializers.ModelSerializer):
+    
+    user = serializers.PrimaryKeyRelatedField(read_only=True )
+    content = serializers.PrimaryKeyRelatedField(queryset= Content.objects.all())
+    
+    class Meta:
+        model = UserActivity
+        fields = "__all__"
+        read_only_fields = ["timestamp"]
     
